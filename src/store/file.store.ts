@@ -1,22 +1,30 @@
 import { Buffer } from "buffer";
-import { Bitburner } from "../bitburner.types";
-// import { Bitburner } from "../bitburner.types";
+import { Bitburner } from "bitburner.types";
+import { autorun, makeAutoObservable } from "mobx";
 
 export class FileStore {
   _file: File;
-  data: Bitburner.SaveData;
-  emptyKeys: Set<Bitburner.SaveDataKey> = new Set();
+  save: Bitburner.SaveData;
+
+  constructor() {
+    makeAutoObservable(this);
+    autorun(() => console.log("filestore autorun"));
+  }
 
   get file() {
     return this._file;
   }
 
-  async uploadFile(file: File) {
-    this._file = file;
-    await this.processFile();
+  get ready() {
+    return !!this.save;
   }
 
-  async processFile() {
+  uploadFile = async (file: File) => {
+    this._file = file;
+    await this.processFile();
+  };
+
+  processFile = async () => {
     const buffer = Buffer.from(await this.file.text(), "base64");
 
     const rawData: Bitburner.RawSaveData = JSON.parse(buffer.toString());
@@ -25,25 +33,79 @@ export class FileStore {
       throw new Error("Invalid save file");
     }
 
-    const saveFile: Partial<Bitburner.SaveData> = {
-      ctor: Bitburner.Ctor.BitburnerSaveObject,
-    };
+    const data: any = {};
 
-    const data: Partial<Bitburner.SaveData["data"]> = {};
-
-    console.log(rawData);
-
-    Object.values(Bitburner.SaveDataKey).forEach((key) => {
+    for (const key of Object.values(Bitburner.SaveDataKey)) {
       if (!rawData.data[key]) {
-        this.emptyKeys.add(key);
         data[key] = null;
       } else {
         data[key] = JSON.parse(rawData.data[key]);
       }
+    }
+
+    this.setSaveData({
+      ctor: Bitburner.Ctor.BitburnerSaveObject,
+      data,
     });
 
-    console.log(data.CompaniesSave);
-  }
+    if (
+      !this.save.data.PlayerSave.data.exploits.includes(
+        Bitburner.Exploit.EditSaveFile
+      )
+    ) {
+      console.info("Applying EditSaveFile exploit!");
+      this.save.data.PlayerSave.data.exploits.push(
+        Bitburner.Exploit.EditSaveFile
+      );
+    }
+
+    console.info("File processed...");
+  };
+
+  downloadFile = () => {
+    const rawData: Partial<Bitburner.RawSaveData> = {
+      ctor: Bitburner.Ctor.BitburnerSaveObject,
+    };
+
+    const data: any = {};
+
+    Object.values(Bitburner.SaveDataKey).forEach((key) => {
+      // Each key's value needs to be stringified independently
+      if (this.save.data[key] === null) {
+        data[key] = "";
+      } else {
+        data[key] = JSON.stringify(this.save.data[key]);
+      }
+    });
+
+    rawData.data = data;
+
+    const encodedData = Buffer.from(JSON.stringify(rawData)).toString("base64");
+
+    const blobUrl = window.URL.createObjectURL(
+      new Blob([encodedData], { type: "base64" })
+    );
+
+    // Trick to start a download
+    const downloadLink = document.createElement("a");
+    downloadLink.style.display = "none";
+    downloadLink.href = blobUrl;
+    downloadLink.download = `bitburnerSave_${
+      Math.floor(Date.now() / 1000) // Seconds, not milliseconds
+    }_BN1x0-H4CKeD.json`; // Adding BN1x0 blindly for now, don't understand why it's there in the original filename.
+    document.body.appendChild(downloadLink);
+    downloadLink.click();
+
+    downloadLink.remove();
+
+    window.URL.revokeObjectURL(blobUrl);
+
+    return encodedData;
+  };
+
+  setSaveData = (save: typeof this.save) => {
+    this.save = save;
+  };
 }
 
 export default new FileStore();
