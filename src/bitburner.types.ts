@@ -208,7 +208,7 @@ export namespace Bitburner {
     };
   }
 
-  interface PlayerSaveObject extends SaveObject<Ctor.PlayerObject> {
+  export interface PlayerSaveObject extends SaveObject<Ctor.PlayerObject> {
     data: {
       augmentations: { level: number; name: string }[];
       bitNodeN: number;

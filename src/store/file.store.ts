@@ -19,6 +19,17 @@ export class FileStore {
     return !!this.save;
   }
 
+  get player() {
+    return {
+      data: this.save.data.PlayerSave.data,
+      updatePlayer: this.updatePlayer,
+    };
+  }
+
+  updatePlayer = (updates: Partial<Bitburner.PlayerSaveObject["data"]>) => {
+    Object.assign(this.save.data.PlayerSave.data, updates);
+  };
+
   uploadFile = async (file: File) => {
     this._file = file;
     await this.processFile();

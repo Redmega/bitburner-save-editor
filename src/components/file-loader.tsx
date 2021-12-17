@@ -1,7 +1,10 @@
 import { ChangeEventHandler, useCallback, useContext } from "react";
 import { FileContext } from "../App";
 
-export default function FileLoader() {
+import { ReactComponent as UploadIcon } from "icons/upload.svg";
+import { observer } from "mobx-react-lite";
+
+export default observer(function FileLoader() {
   const fileContext = useContext(FileContext);
 
   const onSelectFile = useCallback<ChangeEventHandler<HTMLInputElement>>(
@@ -13,6 +16,15 @@ export default function FileLoader() {
   );
 
   return (
-    <input type="file" accept="application/json" onChange={onSelectFile} />
+    <label className="inline-flex items-center rounded py-2 px-8 bg-gray-800">
+      <UploadIcon className="h-8 w-8 mr-4" />
+      {fileContext.file?.name ?? "Choose File"}
+      <input
+        className="hidden"
+        type="file"
+        accept="application/json"
+        onChange={onSelectFile}
+      />
+    </label>
   );
-}
+});
