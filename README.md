@@ -14,6 +14,8 @@ Open the save editor and upload your exported Bitburner save file. When you're d
 - [ ] Factions
 - [ ] Player
   - [x] Money
+  - [ ] Exploits
+    - [x] Edit Save File
   - [ ] ...Everything Else
 - [ ] Settings
 - [ ] Staneks
