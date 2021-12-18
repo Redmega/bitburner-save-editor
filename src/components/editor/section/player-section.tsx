@@ -21,7 +21,7 @@ export default observer(function PlayerSection() {
   );
 
   return (
-    <div>
+    <div className="w-64">
       <EditableSection
         type="number"
         label="Money"

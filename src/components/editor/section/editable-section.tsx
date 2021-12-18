@@ -1,5 +1,7 @@
 import {
   ChangeEventHandler,
+  FormEventHandler,
+  MouseEventHandler,
   PropsWithChildren,
   useCallback,
   useState,
@@ -21,38 +23,55 @@ export default function EditableSection({
   property,
   onChange: _onChange,
   type,
-  value,
+  value: initialValue,
 }: Props) {
+  const [value, setValue] = useState(initialValue);
   const [editing, setEditing] = useState(false);
 
   const onChange = useCallback<ChangeEventHandler<HTMLInputElement>>(
     (event) => {
-      let value: string | number = event.currentTarget.value;
-
-      if (type === "number") {
-        value = Math.min(Number.MAX_SAFE_INTEGER, Number(value));
-      }
-      _onChange(property, value);
+      setValue(event.currentTarget.value);
     },
-    [property, type, _onChange]
+    []
+  );
+
+  const onClose = useCallback<
+    MouseEventHandler<HTMLDivElement> & FormEventHandler
+  >(
+    (event) => {
+      let parsedValue: string | number = value;
+
+      if (type === "number" && Number(value) !== initialValue) {
+        parsedValue = Math.min(Number.MAX_SAFE_INTEGER, Number(value));
+      }
+
+      _onChange(property, parsedValue);
+      setEditing(false);
+      event.preventDefault();
+    },
+    [property, _onChange, type, initialValue, value]
   );
 
   return (
-    <>
+    <form
+      data-id="editable-section"
+      data-property={property}
+      onSubmit={onClose}
+    >
       <label
-        className="z-10 relative inline-flex flex-col p-2 rounded hover:bg-gray-800 transition-colors duration-200 ease-in-out focus-within:bg-gray-800"
+        className="z-10 h-full w-full relative inline-flex flex-col p-2 rounded hover:bg-gray-800 transition-colors duration-200 ease-in-out focus-within:bg-gray-800"
         onClick={!editing ? () => setEditing(true) : undefined}
         title={formatter(value)}
       >
-        <span className="font-bold text-gray-100 mb-1">{label}</span>
+        <span className="text-xl font-bold text-gray-100 mb-1">{label}</span>
         {!editing && (
-          <span className="max-w-[8rem] overflow-hidden overflow-ellipsis">
+          <span className="overflow-hidden overflow-ellipsis">
             {formatter(value)}
           </span>
         )}
         {editing && (
           <input
-            className="bg-transparent px-2 py-1 rounded border-gray-800 hover:bg-gray-900 focus:bg-gray-900 outline-none w-32"
+            className="bg-transparent px-2 py-1 rounded border-gray-800 hover:bg-gray-900 focus:bg-gray-900 outline-none"
             value={value}
             type={type}
             onChange={onChange}
@@ -64,8 +83,8 @@ export default function EditableSection({
           "z-0 absolute inset-0 bg-gray-900  transition-opacity duration-200 ease-in-out",
           editing ? "opacity-50" : "opacity-0 pointer-events-none"
         )}
-        onClick={() => setEditing(false)}
+        onClick={onClose}
       />
-    </>
+    </form>
   );
 }
