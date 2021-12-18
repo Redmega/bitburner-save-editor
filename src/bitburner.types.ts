@@ -238,7 +238,7 @@ export namespace Bitburner {
       moneySourceB: MoneySourceSaveObject;
       playtimeSinceLastAug: number;
       playtimeSinceLastBitnode: number;
-      purchasedServers: unknown[];
+      purchasedServers: string[];
       queuedAugmentations: { level: number; name: string }[];
       resleeves: unknown[]; // @TODO Resleeve[];
       scriptProdSinceLastAug: number;
@@ -253,7 +253,7 @@ export namespace Bitburner {
       totalPlaytime: number;
 
       // Stats
-      hacking_skill: number;
+      hacking: number;
       strength: number;
       defense: number;
       dexterity: number;
@@ -335,6 +335,25 @@ export namespace Bitburner {
       workMoneyLossRate: number;
     };
   }
+
+  export type PlayerStat =
+    | "hacking"
+    | "strength"
+    | "defense"
+    | "dexterity"
+    | "agility"
+    | "charisma"
+    | "intelligence";
+
+  export const PLAYER_STATS: PlayerStat[] = [
+    "hacking",
+    "strength",
+    "defense",
+    "dexterity",
+    "agility",
+    "charisma",
+    "intelligence",
+  ];
 
   // Not sure why these don't follow the SaveObject model
   interface SettingsSaveData {

@@ -9,6 +9,9 @@ export class FileStore {
   constructor() {
     makeAutoObservable(this);
     autorun(() => console.log("filestore autorun"));
+
+    // @ts-ignore
+    window.store = this;
   }
 
   get file() {

@@ -3,6 +3,7 @@ import { observer } from "mobx-react-lite";
 
 import { Bitburner } from "bitburner.types";
 import EditableSection from "./editable-section";
+import StatSection from "./stat-section";
 import { FileContext } from "App";
 import { formatMoney } from "util/format";
 
@@ -21,7 +22,7 @@ export default observer(function PlayerSection() {
   );
 
   return (
-    <div className="w-64">
+    <div className="flex flex-wrap gap-4">
       <EditableSection
         type="number"
         label="Money"
@@ -30,6 +31,14 @@ export default observer(function PlayerSection() {
         formatter={formatMoney}
         onChange={onChange}
       />
+      {Bitburner.PLAYER_STATS.map((stat) => (
+        <StatSection
+          // @ts-ignore
+          key={stat}
+          property={stat}
+          onChange={onChange}
+        />
+      ))}
     </div>
   );
 });

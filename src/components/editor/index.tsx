@@ -49,6 +49,8 @@ export default observer(function EditorContainer() {
         >
           {Object.values(Bitburner.SaveDataKey).map((key) => (
             <button
+              // @ts-ignore
+              key={key}
               property={key}
               className={clsx(
                 "px-4 py-2 -b-px font-semibold border-b-2 border-transparent transition-colors duration-200 ease-in",
@@ -68,7 +70,7 @@ export default observer(function EditorContainer() {
           {">"}
         </button>
       </div>
-      <div className="w-full h-full flex-1 mt-4 p-2 shadow shadow-green-900">
+      <div className="w-full h-full flex-1 mt-4 p-4 rounded shadow shadow-green-900">
         {!fileContext.ready && <span>Upload a file to begin...</span>}
         {fileContext.ready && <EditorSection tab={activeTab} />}
       </div>

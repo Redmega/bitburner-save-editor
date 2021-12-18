@@ -4,28 +4,27 @@ import {
   MouseEventHandler,
   PropsWithChildren,
   useCallback,
+  useContext,
   useState,
 } from "react";
 import clsx from "clsx";
+import { observer } from "mobx-react-lite";
+import { FileContext } from "App";
+import { calculateExp } from "util/game";
+import { Bitburner } from "bitburner.types";
 
 interface Props extends PropsWithChildren<{}> {
-  formatter?: (...args: any) => string;
-  label: string;
+  property: Bitburner.PlayerStat;
   onChange(key: string, value: any): void;
-  property: string;
-  type: string;
-  value: string | number;
 }
 
-export default function EditableSection({
-  formatter,
-  label,
+export default observer(function StatSection({
   property,
   onChange: _onChange,
-  type,
-  value: initialValue,
 }: Props) {
-  const [value, setValue] = useState(initialValue);
+  const { player } = useContext(FileContext);
+  const [value, setValue] = useState(`${player.data[property]}`);
+
   const [editing, setEditing] = useState(false);
 
   const onChange = useCallback<ChangeEventHandler<HTMLInputElement>>(
@@ -39,24 +38,25 @@ export default function EditableSection({
     MouseEventHandler<HTMLDivElement> & FormEventHandler
   >(
     (event) => {
-      let parsedValue: string | number = value;
+      const desiredLevel = Math.min(Number.MAX_SAFE_INTEGER, Number(value));
+      let mult =
+        property === "intelligence" ? 1 : player.data[`${property}_exp_mult`];
 
-      if (type === "number") {
-        parsedValue = Math.min(Number.MAX_SAFE_INTEGER, Number(value));
-      }
+      // @TODO: Handle augmentations
 
-      _onChange(property, parsedValue);
+      _onChange(`${property}_exp`, calculateExp(desiredLevel, mult));
+      _onChange(`${property}`, desiredLevel);
       setEditing(false);
       event.preventDefault();
     },
-    [property, _onChange, type, value]
+    [property, _onChange, value, player.data]
   );
 
   return (
     <>
       <form
         className="w-64 rounded border border-gray-700 shadow shadow-green-700"
-        data-id="editable-section"
+        data-id="stat-section"
         data-property={property}
         onSubmit={onClose}
       >
@@ -66,21 +66,31 @@ export default function EditableSection({
             editing && "z-20"
           )}
           onClick={!editing ? () => setEditing(true) : undefined}
-          title={formatter?.(value) ?? `${value}`}
         >
-          <span className="text-xl font-bold text-gray-100 mb-1">{label}</span>
+          <span className="text-xl font-bold text-gray-100 mb-1 capitalize">
+            {property}
+          </span>
           {!editing && (
             <span className="overflow-hidden overflow-ellipsis">
-              {formatter?.(value) ?? `${value}`}
+              {player.data[property]}
             </span>
           )}
           {editing && (
-            <input
-              className="bg-transparent px-2 py-1 rounded border-gray-800 hover:bg-gray-900 focus:bg-gray-900 outline-none"
-              value={value}
-              type={type}
-              onChange={onChange}
-            />
+            <>
+              <div>
+                <span>Level: </span>
+                <input
+                  className="bg-transparent px-2 py-1 rounded border-gray-800 hover:bg-gray-900 focus:bg-gray-900 outline-none"
+                  value={value}
+                  type="number"
+                  onChange={onChange}
+                />
+              </div>
+              <small className="mt-1 text-xs italic text-slate-500 px-2">
+                Level calculation does not factor augmentations, so actual
+                in-game levels may vary
+              </small>
+            </>
           )}
         </label>
       </form>
@@ -93,4 +103,4 @@ export default function EditableSection({
       />
     </>
   );
-}
+});
