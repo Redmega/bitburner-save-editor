@@ -33,6 +33,19 @@ export class FileStore {
     Object.assign(this.save.data.PlayerSave.data, updates);
   };
 
+  get factions() {
+    return {
+      data: Object.entries(this.save.data.FactionsSave).sort(
+        (a, b) => b[1].data.playerReputation - a[1].data.playerReputation
+      ),
+      updateFaction: this.updateFaction,
+    };
+  }
+
+  updateFaction = (faction: string, updates: Partial<Bitburner.FactionsSaveObject["data"]>) => {
+    Object.assign(this.save.data.FactionsSave[faction].data, updates);
+  };
+
   uploadFile = async (file: File) => {
     this._file = file;
     await this.processFile();
@@ -62,15 +75,9 @@ export class FileStore {
       data,
     });
 
-    if (
-      !this.save.data.PlayerSave.data.exploits.includes(
-        Bitburner.Exploit.EditSaveFile
-      )
-    ) {
+    if (!this.save.data.PlayerSave.data.exploits.includes(Bitburner.Exploit.EditSaveFile)) {
       console.info("Applying EditSaveFile exploit!");
-      this.save.data.PlayerSave.data.exploits.push(
-        Bitburner.Exploit.EditSaveFile
-      );
+      this.save.data.PlayerSave.data.exploits.push(Bitburner.Exploit.EditSaveFile);
     }
 
     console.info("File processed...");
@@ -96,9 +103,7 @@ export class FileStore {
 
     const encodedData = Buffer.from(JSON.stringify(rawData)).toString("base64");
 
-    const blobUrl = window.URL.createObjectURL(
-      new Blob([encodedData], { type: "base64" })
-    );
+    const blobUrl = window.URL.createObjectURL(new Blob([encodedData], { type: "base64" }));
 
     // Trick to start a download
     const downloadLink = document.createElement("a");

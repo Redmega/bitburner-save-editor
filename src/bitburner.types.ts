@@ -1,9 +1,9 @@
 export namespace Bitburner {
   export enum SaveDataKey {
     PlayerSave = "PlayerSave",
+    FactionsSave = "FactionsSave",
     AllServersSave = "AllServersSave",
     CompaniesSave = "CompaniesSave",
-    FactionsSave = "FactionsSave",
     AliasesSave = "AliasesSave",
     GlobalAliasesSave = "GlobalAliasesSave",
     MessagesSave = "MessagesSave",
@@ -116,7 +116,7 @@ export namespace Bitburner {
     };
   }
 
-  interface FactionsSaveObject extends SaveObject<Ctor.Faction> {
+  export interface FactionsSaveObject extends SaveObject<Ctor.Faction> {
     data: {
       alreadyInvited: boolean;
       augmentations: string[];
@@ -336,14 +336,7 @@ export namespace Bitburner {
     };
   }
 
-  export type PlayerStat =
-    | "hacking"
-    | "strength"
-    | "defense"
-    | "dexterity"
-    | "agility"
-    | "charisma"
-    | "intelligence";
+  export type PlayerStat = "hacking" | "strength" | "defense" | "dexterity" | "agility" | "charisma" | "intelligence";
 
   export const PLAYER_STATS: PlayerStat[] = [
     "hacking",

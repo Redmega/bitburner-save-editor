@@ -1,10 +1,4 @@
-import {
-  MouseEventHandler,
-  useCallback,
-  useContext,
-  useRef,
-  useState,
-} from "react";
+import { MouseEventHandler, useCallback, useContext, useRef, useState } from "react";
 import clsx from "clsx";
 import { observer } from "mobx-react-lite";
 
@@ -17,15 +11,12 @@ export default observer(function EditorContainer() {
   const [activeTab, setActiveTab] = useState(Bitburner.SaveDataKey.PlayerSave);
   const navRef = useRef<HTMLElement>();
 
-  const clickTab = useCallback<MouseEventHandler<HTMLButtonElement>>(
-    (event) => {
-      setActiveTab(event.currentTarget.value as Bitburner.SaveDataKey);
-      navRef.current.scrollTo({
-        left: event.currentTarget.offsetLeft - 32,
-      });
-    },
-    []
-  );
+  const clickTab = useCallback<MouseEventHandler<HTMLButtonElement>>((event) => {
+    setActiveTab(event.currentTarget.value as Bitburner.SaveDataKey);
+    navRef.current.scrollTo({
+      left: event.currentTarget.offsetLeft - 32,
+    });
+  }, []);
 
   const scrollRight = useCallback(() => {
     navRef.current.scrollBy({ left: navRef.current.scrollWidth * 0.2 });
@@ -43,10 +34,7 @@ export default observer(function EditorContainer() {
         >
           {"<"}
         </button>
-        <nav
-          className="w-full scroll-hidden overflow-x-scroll flex gap-x-4 scroll-smooth"
-          ref={navRef}
-        >
+        <nav className="w-full scroll-hidden overflow-x-scroll flex gap-x-4 scroll-smooth" ref={navRef}>
           {Object.values(Bitburner.SaveDataKey).map((key) => (
             <button
               // @ts-ignore

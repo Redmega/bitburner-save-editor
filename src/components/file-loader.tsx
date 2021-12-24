@@ -16,15 +16,10 @@ export default observer(function FileLoader() {
   );
 
   return (
-    <label className="inline-flex items-center rounded py-2 px-8 bg-gray-800">
+    <label className="inline-flex items-center rounded py-2 px-8 bg-gray-800 cursor-pointer">
       <UploadIcon className="h-8 w-8 mr-4" />
       {fileContext.file?.name ?? "Choose File"}
-      <input
-        className="hidden"
-        type="file"
-        accept="application/json"
-        onChange={onSelectFile}
-      />
+      <input className="hidden" type="file" accept="application/json" onChange={onSelectFile} />
     </label>
   );
 });

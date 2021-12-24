@@ -12,7 +12,7 @@ export type PlayerDataKey = keyof Bitburner.PlayerSaveObject["data"];
 export default observer(function PlayerSection() {
   const { player } = useContext(FileContext);
 
-  const onChange = useCallback(
+  const onSubmit = useCallback(
     (key: PlayerDataKey, value: any) => {
       player.updatePlayer({
         [key]: value,
@@ -29,14 +29,14 @@ export default observer(function PlayerSection() {
         property="money"
         value={player.data.money}
         formatter={formatMoney}
-        onChange={onChange}
+        onSubmit={onSubmit}
       />
       {Bitburner.PLAYER_STATS.map((stat) => (
         <StatSection
           // @ts-ignore
           key={stat}
           property={stat}
-          onChange={onChange}
+          onSubmit={onSubmit}
         />
       ))}
     </div>

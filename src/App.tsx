@@ -20,10 +20,7 @@ function App() {
           <h1 className="flex items-center text-4xl mb-4">
             Bitburner Save Editor
             {fileStore.ready && (
-              <button
-                className="ml-4 p-2 rounded bg-gray-800 hover:bg-gray-700"
-                onClick={fileStore.downloadFile}
-              >
+              <button className="ml-4 p-2 rounded bg-gray-800 hover:bg-gray-700" onClick={fileStore.downloadFile}>
                 <DownloadIcon className="h-8 w-8" />
               </button>
             )}
