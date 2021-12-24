@@ -11,7 +11,7 @@ Open the save editor and upload your exported Bitburner save file. When you're d
 - [ ] Gangs
 - [ ] Servers
 - [ ] Companies
-- [ ] Factions
+- [x] Factions
 - [ ] Player
   - [x] Money
   - [ ] Exploits
