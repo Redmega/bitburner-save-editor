@@ -46,7 +46,13 @@ export class FileStore {
     Object.assign(this.save.data.FactionsSave[faction].data, updates);
   };
 
+  clearFile = () => {
+    this._file = undefined;
+    this.save = undefined;
+  };
+
   uploadFile = async (file: File) => {
+    this.clearFile();
     this._file = file;
     await this.processFile();
   };
