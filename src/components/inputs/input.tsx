@@ -11,7 +11,7 @@ interface Props extends PropsWithChildren<{}> {
 export function Input({ "data-key": dataKey, disabled, onChange, type, value }: Props) {
   return (
     <input
-      className="bg-transparent px-2 py-1 rounded border-gray-800 hover:bg-gray-900 focus:bg-gray-900 outline-none disabled:opacity-50"
+      className="w-full bg-transparent px-2 py-1 rounded border-gray-800 hover:bg-gray-900 focus:bg-gray-900 outline-none disabled:opacity-50"
       data-key={dataKey}
       disabled={disabled}
       value={value}

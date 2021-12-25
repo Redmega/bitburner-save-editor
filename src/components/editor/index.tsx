@@ -37,7 +37,6 @@ export default observer(function EditorContainer() {
         <nav className="w-full scroll-hidden overflow-x-scroll flex gap-x-4 scroll-smooth" ref={navRef}>
           {Object.values(Bitburner.SaveDataKey).map((key) => (
             <button
-              // @ts-ignore
               key={key}
               property={key}
               className={clsx(

@@ -15,6 +15,7 @@ import { FileContext } from "App";
 import { Bitburner } from "bitburner.types";
 import { Checkbox } from "components/inputs/checkbox";
 import { Input } from "components/inputs/input";
+import { formatNumber } from "util/format";
 
 export type FactionDataKey = keyof Bitburner.FactionsSaveObject["data"];
 
@@ -91,7 +92,7 @@ const Faction = function Faction({ id, faction, onSubmit }: FactionProps) {
         )}
         onClick={!editing ? onClickEnter : undefined}
       >
-        <form className="grid grid-cols-3 gap-1" data-id="editable-section" onSubmit={onClose}>
+        <form className="grid grid-cols-3 gap-1" data-id="faction-section" onSubmit={onClose}>
           <header className="col-span-2 flex items-baseline justify-between">
             <h3 className="text-lg tracking-wide text-green-100">{faction.data.name}</h3>
           </header>
@@ -105,27 +106,34 @@ const Faction = function Faction({ id, faction, onSubmit }: FactionProps) {
             />
           </label>
           <label className="col-span-2 flex items-center">
-            <span>Reputation: </span>
-            <Input
-              disabled={!editing}
-              onChange={onChange}
-              value={`${state.playerReputation}`}
-              type="number"
-              data-key="playerReputation"
-            />
+            <span className="mr-1">Reputation: </span>
+            {editing && (
+              <Input
+                disabled={!editing}
+                onChange={onChange}
+                value={`${state.playerReputation}`}
+                type="number"
+                data-key="playerReputation"
+              />
+            )}
+            {!editing && <p className="px-2 py-1 w-full">{formatNumber(state.playerReputation)}</p>}
           </label>
           <label className="ml-auto inline-flex items-center text-slate-100">
             <span className="mr-2 text-sm">Joined: </span>
             <Checkbox checked={state.isMember} disabled={!editing} onChange={onChange} data-key="isMember" />
           </label>
           <label className="col-span-2 flex items-center">
-            <span>Favor: </span>
-            <Input disabled={!editing} onChange={onChange} value={`${state.favor}`} type="number" data-key="favor" />
+            <span className="mr-1">Favor: </span>
+            {editing && (
+              <Input disabled={!editing} onChange={onChange} value={`${state.favor}`} type="number" data-key="favor" />
+            )}
+            {!editing && <p className="px-2 py-1 w-full">{formatNumber(state.favor)}</p>}
           </label>
           <label className="ml-auto inline-flex items-center text-slate-100">
             <span className="mr-2 text-sm">Banned: </span>
             <Checkbox checked={state.isBanned} disabled={!editing} onChange={onChange} data-key="isBanned" />
           </label>
+          <button type="submit" className="hidden" />
         </form>
       </div>
       <div
