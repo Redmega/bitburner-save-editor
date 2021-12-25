@@ -1,18 +1,18 @@
 {
   "files": {
     "main.css": "/bitburner-save-editor/static/css/main.afb1a1d0.css",
-    "main.js": "/bitburner-save-editor/static/js/main.e42c0232.js",
+    "main.js": "/bitburner-save-editor/static/js/main.52dba5a1.js",
     "static/js/787.6d602637.chunk.js": "/bitburner-save-editor/static/js/787.6d602637.chunk.js",
     "index.html": "/bitburner-save-editor/index.html",
     "static/media/download.svg": "/bitburner-save-editor/static/media/download.f9fee68312420d83fcad977cf322b3b2.svg",
     "static/media/upload.svg": "/bitburner-save-editor/static/media/upload.250d9694cc72adc3f37672dccd1feaa0.svg",
     "static/media/check.svg": "/bitburner-save-editor/static/media/check.a7c10b62125f0151db2d3cc3ad57e19d.svg",
     "main.afb1a1d0.css.map": "/bitburner-save-editor/static/css/main.afb1a1d0.css.map",
-    "main.e42c0232.js.map": "/bitburner-save-editor/static/js/main.e42c0232.js.map",
+    "main.52dba5a1.js.map": "/bitburner-save-editor/static/js/main.52dba5a1.js.map",
     "787.6d602637.chunk.js.map": "/bitburner-save-editor/static/js/787.6d602637.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.afb1a1d0.css",
-    "static/js/main.e42c0232.js"
+    "static/js/main.52dba5a1.js"
   ]
 }
