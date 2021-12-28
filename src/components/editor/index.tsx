@@ -6,13 +6,21 @@ import { Bitburner } from "bitburner.types";
 import { FileContext } from "App";
 import EditorSection from "components/editor/section";
 
+import { ReactComponent as IconFilter } from "icons/filter.svg";
+
 export default observer(function EditorContainer() {
   const fileContext = useContext(FileContext);
-  const [activeTab, setActiveTab] = useState(Bitburner.SaveDataKey.PlayerSave);
   const navRef = useRef<HTMLElement>();
 
-  const clickTab = useCallback<MouseEventHandler<HTMLButtonElement>>((event) => {
+  const [isFiltering, setIsFiltering] = useState(false);
+  const toggleFiltering = useCallback(() => {
+    setIsFiltering((f) => !f);
+  }, []);
+
+  const [activeTab, setActiveTab] = useState(Bitburner.SaveDataKey.PlayerSave);
+  const onClickTab = useCallback<MouseEventHandler<HTMLButtonElement>>((event) => {
     setActiveTab(event.currentTarget.value as Bitburner.SaveDataKey);
+    setIsFiltering(false);
     navRef.current.scrollTo({
       left: event.currentTarget.offsetLeft - 32,
     });
@@ -36,18 +44,23 @@ export default observer(function EditorContainer() {
         </button>
         <nav className="w-full scroll-hidden overflow-x-scroll flex gap-x-4 scroll-smooth" ref={navRef}>
           {Object.values(Bitburner.SaveDataKey).map((key) => (
-            <button
-              key={key}
-              property={key}
+            <div
               className={clsx(
-                "px-4 py-2 -b-px font-semibold border-b-2 border-transparent transition-colors duration-200 ease-in",
+                "flex items-center justify-center",
+                "border-b-2 border-transparent transition-colors duration-200 ease-in",
                 activeTab === key && "border-green-700"
               )}
-              value={key}
-              onClick={clickTab}
+              key={key}
             >
-              {key}
-            </button>
+              <button property={key} className="px-4 py-2 -b-px font-semibold" value={key} onClick={onClickTab}>
+                {key}
+              </button>
+              {activeTab === key && (
+                <button className={clsx(isFiltering && "text-green-700")} onClick={toggleFiltering}>
+                  <IconFilter />
+                </button>
+              )}
+            </div>
           ))}
         </nav>
         <button
@@ -59,7 +72,7 @@ export default observer(function EditorContainer() {
       </div>
       <div className="w-full h-full flex-1 mt-4 p-4 rounded shadow shadow-green-900">
         {!fileContext.ready && <span>Upload a file to begin...</span>}
-        {fileContext.ready && <EditorSection tab={activeTab} />}
+        {fileContext.ready && <EditorSection tab={activeTab} isFiltering={isFiltering} />}
       </div>
     </div>
   );

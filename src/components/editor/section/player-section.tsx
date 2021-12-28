@@ -2,8 +2,8 @@ import { useCallback, useContext } from "react";
 import { observer } from "mobx-react-lite";
 
 import { Bitburner } from "bitburner.types";
-import EditableSection from "./editable-section";
-import StatSection from "./stat-section";
+import EditableSection from "./properties/editable";
+import StatSection from "./properties/stat";
 import { FileContext } from "App";
 import { formatMoney } from "util/format";
 

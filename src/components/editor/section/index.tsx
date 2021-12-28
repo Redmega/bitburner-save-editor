@@ -6,15 +6,17 @@ import FactionSection from "./factions-section";
 
 interface Props {
   tab: Bitburner.SaveDataKey;
+  isFiltering?: boolean;
 }
 
 export default class EditorSection extends Component<Props> {
   get component() {
-    switch (this.props.tab) {
+    const { tab, ...restProps } = this.props;
+    switch (tab) {
       case Bitburner.SaveDataKey.PlayerSave:
-        return <PlayerSection />;
+        return <PlayerSection {...restProps} />;
       case Bitburner.SaveDataKey.FactionsSave:
-        return <FactionSection />;
+        return <FactionSection {...restProps} />;
       default:
         return <div>Not Implemented</div>;
     }

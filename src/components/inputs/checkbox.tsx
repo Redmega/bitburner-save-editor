@@ -4,9 +4,9 @@ import { ReactComponent as CheckIcon } from "icons/check.svg";
 import clsx from "clsx";
 
 interface Props extends PropsWithChildren<{}> {
-  checked: boolean;
+  checked?: boolean;
   className?: string;
-  "data-key": string;
+  "data-key"?: string;
   disabled?: boolean;
   onChange: ChangeEventHandler<HTMLInputElement>;
   value?: string;

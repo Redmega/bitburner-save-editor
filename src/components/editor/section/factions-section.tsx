@@ -1,15 +1,18 @@
 import {
+  ChangeEvent,
   ChangeEventHandler,
   FormEventHandler,
+  MouseEvent,
   MouseEventHandler,
   PropsWithChildren,
   useCallback,
   useContext,
+  useMemo,
   useState,
 } from "react";
 import { observer } from "mobx-react-lite";
 import clsx from "clsx";
-import { pick } from "ramda";
+import { ascend, descend, path, pick, sortWith } from "ramda";
 
 import { FileContext } from "App";
 import { Bitburner } from "bitburner.types";
@@ -17,10 +20,42 @@ import { Checkbox } from "components/inputs/checkbox";
 import { Input } from "components/inputs/input";
 import { formatNumber } from "util/format";
 
+import { SortAscendingIcon, SortDescendingIcon } from "@heroicons/react/solid";
+
 export type FactionDataKey = keyof Bitburner.FactionsSaveObject["data"];
 
-export default observer(function FactionSection() {
+interface Props extends PropsWithChildren<{}> {
+  isFiltering?: boolean;
+}
+export default observer(function FactionSection({ isFiltering }: Props) {
   const { factions } = useContext(FileContext);
+  const [filters, setFilters] = useState<Partial<Bitburner.FactionsSaveObject["data"]>>({
+    playerReputation: -1,
+  });
+
+  const filteredFactions = useMemo(() => {
+    const filteredFactions = factions.data.filter(([, faction]) => {
+      return (
+        (!filters.alreadyInvited || faction.data.alreadyInvited) &&
+        (!filters.isMember || faction.data.isMember) &&
+        (!filters.isBanned || faction.data.isBanned)
+      );
+    });
+
+    // sort
+    let sortProperty: keyof typeof filters = filters.playerReputation
+      ? "playerReputation"
+      : filters.favor
+      ? "favor"
+      : undefined;
+
+    if (!sortProperty) return filteredFactions;
+
+    return sortWith(
+      [filters[sortProperty] > 0 ? ascend(path([1, "data", sortProperty])) : descend(path([1, "data", sortProperty]))],
+      filteredFactions
+    );
+  }, [factions.data, filters]);
 
   const onSubmit = useCallback(
     (faction: string, updates: Partial<Bitburner.FactionsSaveObject["data"]>) => {
@@ -29,12 +64,81 @@ export default observer(function FactionSection() {
     [factions]
   );
 
+  const onEditFilters = useCallback((event: ChangeEvent<HTMLInputElement> | MouseEvent<HTMLButtonElement>) => {
+    if (event.currentTarget.type === "checkbox") {
+      const element = event.currentTarget as HTMLInputElement;
+      const property = element.dataset.key;
+      const checked = element.checked;
+
+      setFilters((f) => ({
+        ...f,
+        [property]: checked,
+      }));
+    } else {
+      const element = event.currentTarget as HTMLButtonElement;
+      const property = element.dataset.key as keyof typeof filters;
+      const otherProperty = property === "favor" ? "playerReputation" : "favor";
+
+      setFilters((f) => ({
+        ...f,
+        [property]: !f[property] ? -1 : f[property] > 0 ? -1 : 1,
+        [otherProperty]: undefined,
+      }));
+    }
+  }, []);
+
   // @TODO: Add sorting
   return (
-    <div className="grid grid-cols-6 grid-flow-row gap-4">
-      {factions.data.map(([faction, factionData]) => (
-        <Faction key={faction} id={faction} faction={factionData} onSubmit={onSubmit} />
-      ))}
+    <div>
+      {isFiltering && (
+        <>
+          <div className="mb-4 flex gap-4">
+            <label className="inline-flex items-start text-slate-100">
+              <Checkbox onChange={onEditFilters} data-key="alreadyInvited" checked={filters.alreadyInvited ?? false} />
+              <span className="ml-2">Invited?</span>
+            </label>
+            <label className="inline-flex items-start text-slate-100">
+              <Checkbox onChange={onEditFilters} data-key="isMember" checked={filters.isMember ?? false} />
+              <span className="ml-2">Joined?</span>
+            </label>
+            <label className="inline-flex items-start text-slate-100">
+              <Checkbox onChange={onEditFilters} data-key="isBanned" checked={filters.isBanned ?? false} />
+              <span className="ml-2">Banned?</span>
+            </label>
+          </div>
+          <div className="mb-4 flex gap-4">
+            <button
+              className={clsx("flex items-center justify-center", !filters.playerReputation && "opacity-25")}
+              data-key="playerReputation"
+              onClick={onEditFilters}
+            >
+              {filters.playerReputation > 0 ? (
+                <SortAscendingIcon className="h-6 w-6" />
+              ) : (
+                <SortDescendingIcon className="h-6 w-6" />
+              )}
+              <span className="ml-2">Reputation</span>
+            </button>
+            <button
+              className={clsx("flex items-center justify-center", !filters.favor && "opacity-25")}
+              data-key="favor"
+              onClick={onEditFilters}
+            >
+              {filters.favor > 0 ? (
+                <SortAscendingIcon className="h-6 w-6" />
+              ) : (
+                <SortDescendingIcon className="h-6 w-6" />
+              )}
+              <span className="ml-2">Favor</span>
+            </button>
+          </div>
+        </>
+      )}
+      <div className="grid grid-cols-6 grid-flow-row gap-4">
+        {filteredFactions.map(([faction, factionData]) => (
+          <Faction key={faction} id={faction} faction={factionData} onSubmit={onSubmit} />
+        ))}
+      </div>
     </div>
   );
 });
