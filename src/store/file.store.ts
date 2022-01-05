@@ -8,7 +8,6 @@ export class FileStore {
 
   constructor() {
     makeAutoObservable(this);
-    autorun(() => console.log("filestore autorun"));
 
     // @ts-ignore
     window.store = this;
@@ -115,9 +114,12 @@ export class FileStore {
     const downloadLink = document.createElement("a");
     downloadLink.style.display = "none";
     downloadLink.href = blobUrl;
+    const match = this.file.name.match(/bitburnerSave_(?<ts>\d+)_(?<bn>BN.*).json/);
+
     downloadLink.download = `bitburnerSave_${
       Math.floor(Date.now() / 1000) // Seconds, not milliseconds
-    }_BN1x0-H4CKeD.json`; // Adding BN1x0 blindly for now, don't understand why it's there in the original filename.
+    }_${match.groups.bn ?? "BN1x0"}-H4CKeD.json`;
+
     document.body.appendChild(downloadLink);
     downloadLink.click();
 

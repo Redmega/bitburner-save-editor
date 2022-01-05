@@ -19,8 +19,10 @@ import { Bitburner } from "bitburner.types";
 import { Checkbox } from "components/inputs/checkbox";
 import { Input } from "components/inputs/input";
 import { formatNumber } from "util/format";
+import { useDebounce } from "util/hooks";
 
 import { SortAscendingIcon, SortDescendingIcon } from "@heroicons/react/solid";
+import { ReactComponent as SearchIcon } from "icons/search.svg";
 
 export type FactionDataKey = keyof Bitburner.FactionsSaveObject["data"];
 
@@ -29,6 +31,8 @@ interface Props extends PropsWithChildren<{}> {
 }
 export default observer(function FactionSection({ isFiltering }: Props) {
   const { factions } = useContext(FileContext);
+  const [query, setQuery] = useState("");
+  const debouncedQuery = useDebounce(query, 500);
   const [filters, setFilters] = useState<Partial<Bitburner.FactionsSaveObject["data"]>>({
     playerReputation: -1,
   });
@@ -38,7 +42,8 @@ export default observer(function FactionSection({ isFiltering }: Props) {
       return (
         (!filters.alreadyInvited || faction.data.alreadyInvited) &&
         (!filters.isMember || faction.data.isMember) &&
-        (!filters.isBanned || faction.data.isBanned)
+        (!filters.isBanned || faction.data.isBanned) &&
+        (debouncedQuery.length === 0 || faction.data.name.indexOf(debouncedQuery) >= 0)
       );
     });
 
@@ -55,7 +60,7 @@ export default observer(function FactionSection({ isFiltering }: Props) {
       [filters[sortProperty] > 0 ? ascend(path([1, "data", sortProperty])) : descend(path([1, "data", sortProperty]))],
       filteredFactions
     );
-  }, [factions.data, filters]);
+  }, [factions.data, filters, debouncedQuery]);
 
   const onSubmit = useCallback(
     (faction: string, updates: Partial<Bitburner.FactionsSaveObject["data"]>) => {
@@ -93,15 +98,25 @@ export default observer(function FactionSection({ isFiltering }: Props) {
       {isFiltering && (
         <>
           <div className="mb-4 flex gap-4">
-            <label className="inline-flex items-start text-slate-100">
+            <label className="flex items-center">
+              <SearchIcon className="h-6 w-6 text-slate-500" />
+              <Input
+                className="border-b border-green-900"
+                onChange={(e) => setQuery(e.currentTarget.value)}
+                value={query}
+                type="text"
+                placeholder="Search Factions..."
+              />
+            </label>
+            <label className="inline-flex items-center text-slate-100">
               <Checkbox onChange={onEditFilters} data-key="alreadyInvited" checked={filters.alreadyInvited ?? false} />
               <span className="ml-2">Invited?</span>
             </label>
-            <label className="inline-flex items-start text-slate-100">
+            <label className="inline-flex items-center text-slate-100">
               <Checkbox onChange={onEditFilters} data-key="isMember" checked={filters.isMember ?? false} />
               <span className="ml-2">Joined?</span>
             </label>
-            <label className="inline-flex items-start text-slate-100">
+            <label className="inline-flex items-center text-slate-100">
               <Checkbox onChange={onEditFilters} data-key="isBanned" checked={filters.isBanned ?? false} />
               <span className="ml-2">Banned?</span>
             </label>
@@ -153,15 +168,11 @@ const Faction = function Faction({ id, faction, onSubmit }: FactionProps) {
   const [editing, setEditing] = useState(false);
   const [state, setState] = useState(Object.assign({}, faction.data));
 
-  const onClickEnter = useCallback<MouseEventHandler<HTMLDivElement>>(
-    (event) => {
-      setEditing(true);
-      // So clicking into the box does not trigger checkboxes.
-      if ((event.target as HTMLElement).tagName === "svg") event.preventDefault();
-      console.log(state.augmentations);
-    },
-    [state.augmentations]
-  );
+  const onClickEnter = useCallback<MouseEventHandler<HTMLDivElement>>((event) => {
+    setEditing(true);
+    // So clicking into the box does not trigger checkboxes.
+    if ((event.target as HTMLElement).tagName === "svg") event.preventDefault();
+  }, []);
 
   const onChange = useCallback<ChangeEventHandler<HTMLInputElement>>((event) => {
     const { checked, dataset, type, value } = event.currentTarget;
@@ -191,16 +202,16 @@ const Faction = function Faction({ id, faction, onSubmit }: FactionProps) {
     <>
       <div
         className={clsx(
-          "transition-colors duration-200 ease-in-out relative inline-flex flex-col p-2 rounded border shadow shadow-green-700 border-gray-700 hover:bg-gray-800  focus-within:bg-gray-800 row-span-2",
-          editing && "z-20"
+          "transition-colors duration-200 ease-in-out relative inline-flex flex-col p-2 rounded border shadow shadow-green-700 border-gray-700 hover:bg-gray-800  focus-within:bg-gray-800 row-span-2 h-10 overflow-hidden",
+          editing && "z-20 h-auto"
         )}
         onClick={!editing ? onClickEnter : undefined}
       >
         <form className="grid grid-cols-3 gap-1" data-id="faction-section" onSubmit={onClose}>
           <header className="col-span-2 flex items-baseline justify-between">
-            <h3 className="text-lg tracking-wide text-green-100">{faction.data.name}</h3>
+            <h3 className="tracking-wide text-green-100">{faction.data.name}</h3>
           </header>
-          <label className="ml-auto inline-flex items-start text-slate-100">
+          <label className="ml-auto inline-flex items-center text-slate-100">
             <span className="mr-2 text-sm">Invited: </span>
             <Checkbox
               checked={state.alreadyInvited}

@@ -1,22 +1,19 @@
-import React, { ChangeEventHandler, PropsWithChildren } from "react";
+import clsx from "clsx";
+import React, { ChangeEventHandler, InputHTMLAttributes, PropsWithChildren } from "react";
 
-interface Props extends PropsWithChildren<{}> {
-  "data-key": string;
-  disabled?: boolean;
-  onChange: ChangeEventHandler<HTMLInputElement>;
-  type: React.HTMLInputTypeAttribute;
-  value?: string;
+interface Props extends PropsWithChildren<InputHTMLAttributes<HTMLInputElement>> {
+  "data-key"?: string;
 }
 
-export function Input({ "data-key": dataKey, disabled, onChange, type, value }: Props) {
+export function Input({ "data-key": dataKey, className, ...props }: Props) {
   return (
     <input
-      className="w-full bg-transparent px-2 py-1 rounded border-gray-800 hover:bg-gray-900 focus:bg-gray-900 outline-none disabled:opacity-50"
+      className={clsx(
+        "w-full bg-transparent px-2 py-1 rounded border-gray-800 hover:bg-gray-900 focus:bg-gray-900 outline-none disabled:opacity-50",
+        className
+      )}
       data-key={dataKey}
-      disabled={disabled}
-      value={value}
-      type={type}
-      onChange={onChange}
+      {...props}
     />
   );
 }
