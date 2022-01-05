@@ -170,8 +170,8 @@ const Faction = function Faction({ id, faction, onSubmit }: FactionProps) {
 
   const onClickEnter = useCallback<MouseEventHandler<HTMLDivElement>>((event) => {
     setEditing(true);
-    // So clicking into the box does not trigger checkboxes.
-    if ((event.target as HTMLElement).tagName === "svg") event.preventDefault();
+    // So clicking into the box does not trigger checkboxes
+    event.preventDefault();
   }, []);
 
   const onChange = useCallback<ChangeEventHandler<HTMLInputElement>>((event) => {
