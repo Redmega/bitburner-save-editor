@@ -186,7 +186,7 @@ const Faction = function Faction({ id, faction, onSubmit }: FactionProps) {
       const favor = Math.min(Number.MAX_SAFE_INTEGER, Number(state.favor));
 
       onSubmit(id, {
-        ...pick(["alreadyInvited", "isMember", "isBanned"]),
+        ...pick(["alreadyInvited", "isMember", "isBanned"], state),
         playerReputation,
         favor,
       });

@@ -30,7 +30,7 @@ export default function EditableSection({ formatter, label, property, onSubmit, 
       let parsedValue: string | number = value;
 
       if (type === "number") {
-        parsedValue = Math.min(Number.MAX_SAFE_INTEGER, Number(value));
+        parsedValue = Math.min(Number.MAX_VALUE, Number(value));
       }
 
       onSubmit(property, parsedValue);

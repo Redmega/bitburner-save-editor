@@ -43,6 +43,19 @@ export class FileStore {
 
   updateFaction = (faction: string, updates: Partial<Bitburner.FactionsSaveObject["data"]>) => {
     Object.assign(this.save.data.FactionsSave[faction].data, updates);
+
+    if (updates.isMember) {
+      this.updatePlayer({ factions: Array.from(new Set(this.player.data.factions.concat(faction))) });
+    } else {
+      this.updatePlayer({ factions: this.player.data.factions.filter((f) => f !== faction) });
+    }
+    if (updates.alreadyInvited && !updates.isMember) {
+      this.updatePlayer({
+        factionInvitations: Array.from(new Set(this.player.data.factionInvitations.concat(faction))),
+      });
+    } else {
+      this.updatePlayer({ factionInvitations: this.player.data.factionInvitations.filter((f) => f !== faction) });
+    }
   };
 
   clearFile = () => {
@@ -114,7 +127,7 @@ export class FileStore {
     const downloadLink = document.createElement("a");
     downloadLink.style.display = "none";
     downloadLink.href = blobUrl;
-    const match = this.file.name.match(/bitburnerSave_(?<ts>\d+)_(?<bn>BN.*).json/);
+    const match = this.file.name.match(/bitburnerSave_(?<ts>\d+)_(?<bn>BN.+?)(?:-H4CKeD)*?.json/);
 
     downloadLink.download = `bitburnerSave_${
       Math.floor(Date.now() / 1000) // Seconds, not milliseconds
