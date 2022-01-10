@@ -2,6 +2,8 @@
 
 ## Usage
 
+https://redmega.github.io/bitburner-save-editor/
+
 Open the save editor and upload your exported Bitburner save file. When you're done editing, you can click the download icon in the header to get a new version of your save that you can import to the game.
 
 ## TODO
