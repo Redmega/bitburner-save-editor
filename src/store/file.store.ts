@@ -1,6 +1,6 @@
 import { Buffer } from "buffer";
 import { Bitburner } from "bitburner.types";
-import { autorun, makeAutoObservable } from "mobx";
+import { makeAutoObservable } from "mobx";
 
 export class FileStore {
   _file: File;

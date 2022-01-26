@@ -1,5 +1,5 @@
 import clsx from "clsx";
-import React, { ChangeEventHandler, InputHTMLAttributes, PropsWithChildren } from "react";
+import { InputHTMLAttributes, PropsWithChildren } from "react";
 
 interface Props extends PropsWithChildren<InputHTMLAttributes<HTMLInputElement>> {
   "data-key"?: string;
