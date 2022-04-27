@@ -5,7 +5,7 @@ import { Bitburner } from "bitburner.types";
 import EditableSection from "./properties/editable";
 import StatSection from "./properties/stat";
 import { FileContext } from "App";
-import { formatMoney } from "util/format";
+import { formatMoney, formatNumber } from "util/format";
 
 export type PlayerDataKey = keyof Bitburner.PlayerSaveObject["data"];
 
@@ -39,6 +39,14 @@ export default observer(function PlayerSection() {
           onSubmit={onSubmit}
         />
       ))}
+      <EditableSection
+        type="number"
+        label="Karma"
+        property="karma"
+        value={player.data.karma}
+        formatter={formatNumber}
+        onSubmit={onSubmit}
+      />
     </div>
   );
 });
