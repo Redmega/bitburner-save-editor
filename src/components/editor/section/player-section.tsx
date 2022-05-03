@@ -47,6 +47,13 @@ export default observer(function PlayerSection() {
         formatter={formatNumber}
         onSubmit={onSubmit}
       />
+      <EditableSection
+        type="number"
+        label="Entropy"
+        property="entropy"
+        value={player.data.entropy}
+        onSubmit={onSubmit}
+      />
     </div>
   );
 });

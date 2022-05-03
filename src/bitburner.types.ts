@@ -271,6 +271,7 @@ export namespace Bitburner {
       intelligence_exp: number;
 
       // Multipliers
+      entropy: number;
       hacking_chance_mult: number;
       hacking_speed_mult: number;
       hacking_money_mult: number;
