@@ -149,7 +149,7 @@ export default observer(function FactionSection({ isFiltering }: Props) {
           </div>
         </>
       )}
-      <div className="grid grid-cols-6 grid-flow-row gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 grid-flow-row gap-4">
         {filteredFactions.map(([faction, factionData]) => (
           <Faction key={faction} id={faction} faction={factionData} onSubmit={onSubmit} />
         ))}
