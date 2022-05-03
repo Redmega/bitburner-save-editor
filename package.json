@@ -10,7 +10,6 @@
     "@testing-library/user-event": "^13.5.0",
     "buffer": "^6.0.3",
     "clsx": "^1.1.1",
-    "gh-pages": "^3.2.3",
     "mobx": "^6.3.9",
     "mobx-react-lite": "^3.2.2",
     "ramda": "^0.27.1",
@@ -23,7 +22,6 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "deploy": "gh-pages -d build",
     "test": "react-scripts test --passWithNoTests",
     "eject": "react-scripts eject"
   },
