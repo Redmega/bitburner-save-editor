@@ -1,6 +1,6 @@
 # Butburner Save Editor
 
-## Archived
+## ⚠️ Archived ⚠️
 
 I haven't played Bitburner in years, leaving this up for others who are interested in how they might start a project like this, but it's no longer being maintained or updated.
 
