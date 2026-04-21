@@ -4,6 +4,8 @@
 
 I haven't played Bitburner in years, leaving this up for others who are interested in how they might start a project like this, but it's no longer being maintained or updated.
 
+A fork has been created here: https://github.com/Marcinator2/bitburner-save-editor-v2
+
 ## Usage
 
 https://redmega.github.io/bitburner-save-editor/
